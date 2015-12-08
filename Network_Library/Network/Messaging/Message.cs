@@ -35,17 +35,6 @@ namespace Network_Library.Network.Messaging {
             _serializer = new XmlSerializer(typeof(Message), GetParameterClassList(), GetParameterTypes(), new XmlRootAttribute(ELEMENT_NAME), DEFAULT_NAMESPACE);
         }
 
-        public static string ArrayToString(object[] para, char sep) { return ArrayToString(para, sep + ""); }
-        public static string ArrayToString(object[] para, string sep) {
-            if(para == null) return "";
-            String result = "";
-            for(int i = 0; i < para.Length; i++) {
-                result += para[i];
-                if(i + 1 < para.Length) result += sep;
-            }
-            return result;
-        }
-
         internal void Send(Stream remote, StreamWriter writer) {
             foreach (object o in Parameters) {
                 writer.WriteLine(o.GetType().AssemblyQualifiedName);
@@ -79,6 +68,17 @@ namespace Network_Library.Network.Messaging {
             return aor;
         }
 
-        public override string ToString() { return string.Format("Command: {0}, Parameters: {1}", Command, ArrayToString(Parameters,"  ")); }
+        public override string ToString() { return string.Format("Command: {0}, Parameters: {1}", Command, ArrayToString(Parameters, "  ")); }
+
+        public static string ArrayToString(object[] para, char sep) { return ArrayToString(para, sep + ""); }
+        public static string ArrayToString(object[] para, string sep) {
+            if(para == null) return "";
+            String result = "";
+            for(int i = 0; i < para.Length; i++) {
+                result += para[i];
+                if(i + 1 < para.Length) result += sep;
+            }
+            return result;
+        }
     }
 }

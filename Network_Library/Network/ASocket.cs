@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
@@ -11,6 +12,10 @@ using Network_Library.Network.Messaging;
 using Network_Library.Network.Server;
 
 namespace Network_Library.Network {
+    public delegate void UserConnectEventHandler(object sender, TcpClient remote);
+    public delegate void UserDisconnectEventHandler(object sender, TcpClient remote);
+    public delegate void IncomingMessageEventHandler(object sender, string message);
+
     public abstract class ASocket {
         private const int TIME_BETWEEN_PINGS = 5000;
         private const int TIME_TILL_TIMEOUT = 15000;
@@ -27,6 +32,22 @@ namespace Network_Library.Network {
         private Thread _timeoutChecker;
         protected bool SendTimeoutPing;
 
+        public event UserConnectEventHandler UserConnect;
+        public virtual void OnUserConnect(TcpClient remote) {
+            if(UserConnect == null) return;
+            UserConnect(this, remote);
+        }
+        public event UserDisconnectEventHandler UserDisconnect;
+        public virtual void OnUserDisconnect(TcpClient remote) {
+            if(UserDisconnect == null) return;
+            UserDisconnect(this, remote);
+        }
+        public event IncomingMessageEventHandler IncomingMessage;
+        public virtual void OnIncomingMessage(string message) {
+            if(IncomingMessage == null) return;
+            IncomingMessage(this, message);
+        }
+
         protected ASocket(TcpClient client) {
             InitSocket(client);
         }
@@ -35,11 +56,12 @@ namespace Network_Library.Network {
             RemoteConnection = remote;
             _stream = remote.GetStream();
             _writer = new StreamWriter(_stream);
-            //_writer.AutoFlush = true;
             _reader = new StreamReader(_stream);
 
             if(this is ClientSocket) Debug.WriteLine(this, "Connected to server: " + GetAddress(remote));
             else Debug.WriteLine(this, "Connected to client: "+GetAddress(remote));
+
+            OnUserConnect(remote);
 
             _listeningThread = new Thread(WaitForMessage);
             _listeningThread.Name = this.GetType().Name+"_ListeningThread";
@@ -149,13 +171,30 @@ namespace Network_Library.Network {
 
 
         //////////////////////////////////////////Util
-        protected string RebuildString(object[] split) { return RebuildString(split, 0); }
-        protected string RebuildString(object[] split, int begin) {
+        public static string RebuildString(object[] split) { return RebuildString(split, 0); }
+        public static string RebuildString(object[] split, int begin) {
             String result = "";
             for (int i = 0; i < split.Length-begin; i++) {
                 int curIndex = i + begin;
                 result += split[curIndex].ToString();
                 if (curIndex < split.Length) result += " ";
+            }
+            return result;
+        }
+
+        public static object[] ShortenArray(object[] split, int begin) {
+            int newSize = split.Length - begin;
+            object[] result = new object[newSize];
+            for(int i = 0; i < newSize; i++) {
+                result[i] = split[i + begin];
+            }
+            return result;
+        }
+        public static object[] LengthenArray(object[] split, string cmd) {
+            object[] result = new object[split.Length+1];
+            result[0] = cmd;
+            for(int i = 0; i < split.Length; i++) {
+                result[i + 1] = split[i];
             }
             return result;
         }

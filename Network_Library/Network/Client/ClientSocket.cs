@@ -5,7 +5,7 @@ using Network_Library.Network.Messaging;
 namespace Network_Library.Network.Client {
     public abstract class ClientSocket : ASocket {
         protected ClientSocket(TcpClient client) : base(client) { }
-        protected ClientSocket(string host, int port) : base(new TcpClient(host, port)) { }
+        internal ClientSocket(string host, int port) : base(new TcpClient(host, port)) { }
 
         /// <summary>
         /// Gets called when a new message arrives.
@@ -39,6 +39,7 @@ namespace Network_Library.Network.Client {
 
         public sealed override void Close() {
             Send(new Message("REQUEST_CLOSE"));
+            OnUserDisconnect(RemoteConnection);
         }
     }
 }

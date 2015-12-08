@@ -41,6 +41,7 @@ namespace Network_Library.Network.Server {
 
         public sealed override void Close() {
             Send(new Message("CLOSE"));
+            OnUserDisconnect(RemoteConnection);
             _acceptor.RemoveSocket(this);
             Closed = true;
         }

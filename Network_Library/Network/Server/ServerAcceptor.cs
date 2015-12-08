@@ -6,6 +6,8 @@ using System.Threading;
 using Network_Library.Network.Messaging;
 
 namespace Network_Library.Network.Server {
+    public delegate void ServerSocketCreatedEventHandler(object sender, ServerSocket socket);
+
     public class ServerAcceptor {
         private readonly List<ServerSocket> _sClients = new List<ServerSocket>();
         private Thread _listeningThread;
@@ -13,6 +15,12 @@ namespace Network_Library.Network.Server {
 
         private volatile Boolean _close;
         public Boolean Close { get { return this._close; } set { this._close = value; } }
+
+        public event ServerSocketCreatedEventHandler ServerSocketCreated;
+        public virtual void OnServerSocketCreated(ServerSocket socket) {
+            if(ServerSocketCreated == null) return;
+            ServerSocketCreated(this, socket);
+        }
 
         private readonly Type _serverSocketType;
 
@@ -51,6 +59,7 @@ namespace Network_Library.Network.Server {
                     TcpClient client = listener.AcceptTcpClient();
                     ServerSocket serverSocket = (ServerSocket)Activator.CreateInstance(this._serverSocketType, new object[] { this, client }); ;
                     this._sClients.Add(serverSocket);
+                    ServerSocketCreated(this, serverSocket);
                 } else Thread.Sleep(100);
             }
 

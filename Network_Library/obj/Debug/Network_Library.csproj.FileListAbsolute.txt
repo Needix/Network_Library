@@ -1,4 +1,0 @@
-R:\Eigene Dokumente\Visual Studio 2013\Projects\Network_Library\Network_Library\bin\Debug\Network_Library.pdb
-R:\Eigene Dokumente\Visual Studio 2013\Projects\Network_Library\Network_Library\obj\Debug\Network_Library.pdb
-R:\Eigene Dokumente\Visual Studio 2013\Projects\Network_Library\Network_Library\bin\Debug\Network_Library.dll
-R:\Eigene Dokumente\Visual Studio 2013\Projects\Network_Library\Network_Library\obj\Debug\Network_Library.dll

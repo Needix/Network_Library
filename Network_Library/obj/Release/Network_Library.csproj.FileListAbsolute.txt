@@ -1,5 +1,0 @@
-R:\Eigene Dokumente\Visual Studio 2013\Projects\3_MyDLL\NetworkLibrary\Network_Library\bin\Release\Network_Library.dll
-R:\Eigene Dokumente\Visual Studio 2013\Projects\3_MyDLL\NetworkLibrary\Network_Library\bin\Release\Network_Library.pdb
-R:\Eigene Dokumente\Visual Studio 2013\Projects\3_MyDLL\NetworkLibrary\Network_Library\obj\Release\Network_Library.dll
-R:\Eigene Dokumente\Visual Studio 2013\Projects\3_MyDLL\NetworkLibrary\Network_Library\obj\Release\Network_Library.pdb
-R:\Eigene Dokumente\Visual Studio 2013\Projects\3_MyDLL\NetworkLibrary\Network_Library\obj\Release\Network_Library.csprojResolveAssemblyReference.cache
